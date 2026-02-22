@@ -1,9 +1,0 @@
-fastapi
-uvicorn[standard]
-SQLAlchemy
-pymysql
-python-dotenv
-qrcode[pil]
-Pillow
-Jinja2
-python-multipart
