@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{{ product.product_name }}</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header class="site-header">
+        <div class="logo">Product QR</div>
+      </header>
+
+      <main class="card">
+        <div class="product-top">
+          <div class="product-info">
+            <h1>{{ product.product_name }}</h1>
+            <div class="meta muted">ID: {{ product.product_id }} • Batch: {{ product.batch_no or '—' }}</div>
+          </div>
+          <div class="qr-wrap">
+            {% if product.qr_path %}
+              <img src="/{{ product.qr_path }}" class="qr" alt="QR code for {{ product.product_id }}" />
+            {% else %}
+              <div class="qr placeholder">QR unavailable</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <section class="fields">
+          <div class="field"><strong>Price:</strong> {{ product.price }}</div>
+          <div class="field"><strong>Company:</strong> {{ product.company_name }}</div>
+          <div class="field"><strong>Phone:</strong> <a href="tel:{{ product.phone }}">{{ product.phone }}</a></div>
+          <div class="field"><strong>Website:</strong> <a href="{{ product.website }}" target="_blank">{{ product.website }}</a></div>
+          <div class="field"><strong>Email:</strong> <a href="mailto:{{ product.email }}">{{ product.email }}</a></div>
+          <div class="field"><strong>Address:</strong> {{ product.address }}</div>
+        </section>
+
+        <section class="description">
+          <h3>Description</h3>
+          <div class="description-text">{{ product.description }}</div>
+        </section>
+
+        <div class="actions">
+          <a class="btn" href="tel:{{ product.phone }}">Call Now</a>
+          <a class="btn" href="{{ product.website }}" target="_blank">Visit Website</a>
+          <a class="btn secondary" href="mailto:{{ product.email }}">Email</a>
+          <a class="btn ghost" href="/product/{{ product.product_id }}/vcard">Save as Contact</a>
+          <a class="btn ghost" href="/product/{{ product.product_id }}/pdf">Download PDF</a>
+        </div>
+      </main>
+
+      <footer class="site-footer muted">© {{ product.company_name or 'Company' }} — Product QR</footer>
+    </div>
+  </body>
+</html>
+
+  <script>
+  // Small helper: copy current page URL to clipboard
+  function copyLink() {
+    const url = window.location.href;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(() => {
+        alert('Product link copied to clipboard');
+      }).catch(() => {
+        prompt('Copy this link', url);
+      });
+    } else {
+      prompt('Copy this link', url);
+    }
+  }
+
+  // Add a small floating share button
+  const actions = document.querySelector('.actions');
+  if (actions) {
+    const btn = document.createElement('button');
+    btn.className = 'btn ghost';
+    btn.type = 'button';
+    btn.textContent = 'Share/Copy Link';
+    btn.onclick = function() {
+      if (navigator.share) {
+        navigator.share({ title: document.title, url: window.location.href }).catch(() => copyLink());
+      } else {
+        copyLink();
+      }
+    };
+    actions.insertBefore(btn, actions.firstChild);
+  }
+  </script>

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Admin - Products</title>
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <style>
+      /* small admin-specific tweaks */
+      .admin-controls{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+      .table-wrap{overflow:auto}
+      table.admin-table{width:100%;border-collapse:collapse}
+      table.admin-table th, table.admin-table td{border:1px solid #eee;padding:10px;text-align:left}
+      table.admin-table th{background:#fafafa}
+      img.thumb{width:72px;height:auto;border-radius:8px}
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header class="site-header">
+        <div class="logo">Admin — Product QR</div>
+      </header>
+
+      <main class="card">
+        <h2>Products</h2>
+        <div class="admin-controls">
+          <form method="GET" action="/admin" style="flex:1;display:flex;gap:8px">
+            <input type="text" name="q" placeholder="Search product id or name" value="{{ q or '' }}" style="flex:1;padding:8px;border-radius:6px;border:1px solid #ddd" />
+            <button class="btn" type="submit">Search</button>
+          </form>
+          <a class="btn ghost" href="/admin/new">Add product</a>
+        </div>
+
+        <div class="table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr><th>QR</th><th>Product ID</th><th>Name</th><th>Batch</th><th>Created</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+            {% for p in products %}
+              <tr>
+                <td>{% if p.qr_path %}<img src="/{{ p.qr_path }}" class="thumb" />{% endif %}</td>
+                <td>{{ p.product_id }}</td>
+                <td>{{ p.product_name }}</td>
+                <td>{{ p.batch_no }}</td>
+                <td>{{ p.created_at }}</td>
+                <td>
+                  <a class="btn" href="/product/{{ p.product_id }}" target="_blank">View</a>
+                  <a class="btn" href="/admin/products/{{ p.product_id }}/download_qr">Download QR</a>
+                  <a class="btn secondary" href="/admin/products/{{ p.product_id }}/delete" onclick="return confirm('Delete product?')">Delete</a>
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </main>
+
+      <footer class="site-footer muted">Manage products — showing up to 100</footer>
+    </div>
+  </body>
+</html>
